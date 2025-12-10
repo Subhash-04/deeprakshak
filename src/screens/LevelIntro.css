@@ -1,0 +1,111 @@
+/* ================================================
+   Level Intro Screen Styles
+   ================================================ */
+
+.level-intro-screen {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.level-intro-split {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 40px;
+}
+
+.level-intro-left {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.level-intro-right {
+    flex: 1;
+    max-width: 500px;
+}
+
+.level-intro-content {
+    text-align: center;
+}
+
+.level-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 87, 34, 0.2));
+    border: 1px solid rgba(255, 165, 0, 0.4);
+    border-radius: 50px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: #ffd700;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.guardian-preview {
+    margin-bottom: 1.5rem;
+}
+
+.guardian-preview-icon {
+    font-size: 5rem;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.level-intro-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+}
+
+.level-intro-skill {
+    font-size: 1.1rem;
+    color: var(--color-flame-mid);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.level-intro-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .level-intro-split {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .level-intro-left {
+        transform: scale(0.7);
+    }
+
+    .guardian-preview-icon {
+        font-size: 4rem;
+    }
+}

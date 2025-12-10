@@ -1,0 +1,179 @@
+/* ================================================
+   Phase Image Component Styles
+   ================================================ */
+
+.phase-image-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.phase-small {
+    --phase-size: 150px;
+}
+
+.phase-medium {
+    --phase-size: 250px;
+}
+
+.phase-large {
+    --phase-size: 350px;
+}
+
+/* Main phase image */
+.phase-image {
+    width: var(--phase-size);
+    height: auto;
+    max-height: var(--phase-size);
+    object-fit: contain;
+    position: relative;
+    z-index: 10;
+    animation: phaseFloat 4s ease-in-out infinite;
+    /* Remove background completely - lighten hides dark/checkered backgrounds */
+    mix-blend-mode: lighten;
+    /* Add glow effect that doesn't show background */
+    filter: brightness(1.1) contrast(1.1);
+}
+
+@keyframes phaseFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Glow effect */
+.phase-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--phase-size) * 1.5);
+    height: calc(var(--phase-size) * 1.5);
+    background: radial-gradient(circle,
+            rgba(255, 165, 0, 0.6) 0%,
+            rgba(255, 100, 0, 0.3) 30%,
+            rgba(255, 50, 0, 0.1) 50%,
+            transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: glowPulse 3s ease-in-out infinite;
+    z-index: 5;
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.9;
+    }
+}
+
+/* Sparks container */
+.sparks-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+/* Individual spark */
+.spark {
+    position: absolute;
+    bottom: 30%;
+    width: var(--spark-size, 5px);
+    height: var(--spark-size, 5px);
+    background: radial-gradient(circle, #fff 0%, #ffd700 50%, #ff9500 100%);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow:
+        0 0 6px 2px rgba(255, 215, 0, 0.8),
+        0 0 12px 4px rgba(255, 165, 0, 0.5),
+        0 0 20px 8px rgba(255, 100, 0, 0.3);
+}
+
+.spark.active {
+    animation: sparkFloat var(--spark-duration, 3s) ease-out infinite;
+    animation-delay: var(--spark-delay, 0s);
+}
+
+@keyframes sparkFloat {
+    0% {
+        opacity: 0;
+        transform: translateX(0) translateY(0) scale(0.5);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translateX(calc(var(--spark-x, 20px) * 0.2)) translateY(-20px) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(var(--spark-x, 20px)) translateY(-200px) scale(0.3);
+    }
+}
+
+/* Progress label */
+.phase-progress-label {
+    position: absolute;
+    bottom: -50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    z-index: 15;
+}
+
+.phase-value {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffd700, #ff9500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(255, 165, 0, 0.5);
+}
+
+.phase-text {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .phase-small {
+        --phase-size: 100px;
+    }
+
+    .phase-medium {
+        --phase-size: 180px;
+    }
+
+    .phase-large {
+        --phase-size: 250px;
+    }
+
+    .phase-value {
+        font-size: 1.5rem;
+    }
+}

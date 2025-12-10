@@ -1,0 +1,59 @@
+/* ================================================
+   Puzzle Screen Styles - 2D Layout
+   ================================================ */
+
+.puzzle-screen {
+    min-height: 100vh;
+    position: relative;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 100px 20px 40px;
+}
+
+.puzzle-wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    width: 100%;
+}
+
+/* Word Puzzle Boxes */
+.word-puzzle-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+    position: relative;
+}
+
+.word-puzzle-number {
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background: linear-gradient(135deg, #ffd700, #ff5722);
+    color: #0a0612;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.word-puzzle-clue {
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+}
+
+.word-input {
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    max-width: 200px;
+}

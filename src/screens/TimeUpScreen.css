@@ -1,0 +1,142 @@
+/* ===== TIME UP SCREEN STYLES ===== */
+
+.timeup-screen {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeup-gradient {
+    background: linear-gradient(135deg, #1a0a0a 0%, #2d1a1a 50%, #0a0612 100%) !important;
+}
+
+/* Fading particles */
+.fading-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+.fade-particle {
+    position: absolute;
+    bottom: 50%;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(255, 100, 100, 0.8), transparent);
+    border-radius: 50%;
+    animation: fadeDown 4s ease-out infinite;
+}
+
+@keyframes fadeDown {
+    0% {
+        transform: translateY(0);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(50vh);
+        opacity: 0;
+    }
+}
+
+/* Content */
+.timeup-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+}
+
+.timeup-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.timeup-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    color: #ff5252;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px rgba(255, 82, 82, 0.5);
+}
+
+.timeup-subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2rem;
+}
+
+.timeup-message {
+    background: rgba(255, 82, 82, 0.1);
+    border: 1px solid rgba(255, 82, 82, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.timeup-message p {
+    margin: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+}
+
+.timeup-stats {
+    margin-bottom: 2rem;
+}
+
+.timeup-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.timeup-stat .stat-value {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    color: #ff5252;
+    font-weight: 700;
+}
+
+.timeup-stat .stat-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.timeup-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Form Modal */
+.timeup-form {
+    border-color: rgba(255, 82, 82, 0.3) !important;
+}
+
+.timeup-form .form-modal-header {
+    background: linear-gradient(135deg, rgba(255, 82, 82, 0.2), rgba(100, 50, 50, 0.2)) !important;
+}

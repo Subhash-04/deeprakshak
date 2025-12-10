@@ -1,0 +1,175 @@
+/* ================================================
+   Landing Screen Styles - 2D Layout
+   ================================================ */
+
+.landing-screen {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Background gradient */
+.bg-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+            #0a0612 0%,
+            #150d24 25%,
+            #1a1033 50%,
+            #0d0818 75%,
+            #0a0612 100%);
+    z-index: 0;
+}
+
+/* Animated stars background */
+.bg-stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(2px 2px at 200px 60px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 250px 20px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(2px 2px at 300px 50px, rgba(255, 255, 255, 0.7), transparent);
+    background-size: 350px 150px;
+    animation: twinkle 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* Split layout */
+.landing-split {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    max-width: 1400px;
+    width: 100%;
+    padding: 40px;
+}
+
+/* Left side - Diya */
+.landing-left {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Right side - Content */
+.landing-right {
+    flex: 1;
+    max-width: 600px;
+}
+
+.landing-content {
+    text-align: left;
+}
+
+.landing-title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+}
+
+.landing-subtitle {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.landing-lore {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.event-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.info-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    font-size: 0.9rem;
+}
+
+.info-badge-icon {
+    font-size: 1.2rem;
+}
+
+.btn-large {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .landing-split {
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .landing-content {
+        text-align: center;
+    }
+
+    .event-info {
+        justify-content: center;
+    }
+
+    .landing-left {
+        transform: scale(0.8);
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-split {
+        padding: 20px;
+    }
+
+    .landing-left {
+        transform: scale(0.6);
+    }
+
+    .event-info {
+        flex-direction: column;
+        align-items: center;
+    }
+}

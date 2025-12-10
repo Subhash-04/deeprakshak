@@ -1,0 +1,76 @@
+/* ================================================
+   4 Queens Puzzle Styles
+   ================================================ */
+
+.queens-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem auto;
+    border: 3px solid var(--color-flame-mid);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(255, 165, 0, 0.3);
+}
+
+.queens-row {
+    display: flex;
+}
+
+.queens-cell {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.queens-cell.light {
+    background: linear-gradient(135deg, #e8d5b7 0%, #d4c4a8 100%);
+}
+
+.queens-cell.dark {
+    background: linear-gradient(135deg, #8b6914 0%, #6b4f12 100%);
+}
+
+.queens-cell:hover {
+    filter: brightness(1.2);
+}
+
+.queens-cell.has-queen {
+    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+.queen-piece {
+    font-size: 3rem;
+    color: #1a1a2e;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    animation: queenPulse 2s ease-in-out infinite;
+}
+
+@keyframes queenPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .queens-cell {
+        width: 60px;
+        height: 60px;
+    }
+
+    .queen-piece {
+        font-size: 2.2rem;
+    }
+}
