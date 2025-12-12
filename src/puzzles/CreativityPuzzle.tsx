@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import '../puzzles/PuzzleScreen.css';
 import './QueensPuzzle.css';
 
@@ -8,107 +8,158 @@ interface CreativityPuzzleProps {
     progress: number;
 }
 
-// 4 Queens Puzzle - Place 4 queens on a 4x4 board so none attack each other
+// Knight's Tour Puzzle - Complete a knight's tour on a 4x4 board
 const CreativityPuzzle: React.FC<CreativityPuzzleProps> = ({ onComplete, onBack, progress }) => {
-    const [board, setBoard] = useState<boolean[][]>(
-        Array(4).fill(null).map(() => Array(4).fill(false))
+    const BOARD_SIZE = 4;
+
+    // Track the order of moves (0 = not visited, 1-36 = order visited)
+    const [board, setBoard] = useState<number[][]>(
+        Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0))
     );
+    const [currentPos, setCurrentPos] = useState<[number, number] | null>(null);
+    const [moveCount, setMoveCount] = useState(0);
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | 'hint'; message: string } | null>(null);
-    const [attempts, setAttempts] = useState(0);
 
-    const countQueens = (): number => {
-        let count = 0;
-        for (let r = 0; r < 4; r++) {
-            for (let c = 0; c < 4; c++) {
-                if (board[r][c]) count++;
+    // All possible knight moves
+    const knightMoves = [
+        [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+        [1, -2], [1, 2], [2, -1], [2, 1]
+    ];
+
+    const isValidMove = useCallback((fromRow: number, fromCol: number, toRow: number, toCol: number): boolean => {
+        const rowDiff = Math.abs(toRow - fromRow);
+        const colDiff = Math.abs(toCol - fromCol);
+        return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
+    }, []);
+
+    const getValidMoves = useCallback((row: number, col: number): [number, number][] => {
+        const moves: [number, number][] = [];
+        for (const [dr, dc] of knightMoves) {
+            const newRow = row + dr;
+            const newCol = col + dc;
+            if (newRow >= 0 && newRow < BOARD_SIZE &&
+                newCol >= 0 && newCol < BOARD_SIZE &&
+                board[newRow][newCol] === 0) {
+                moves.push([newRow, newCol]);
             }
         }
-        return count;
-    };
+        return moves;
+    }, [board, BOARD_SIZE]);
 
-    const toggleCell = (row: number, col: number) => {
-        const newBoard = board.map(r => [...r]);
-        newBoard[row][col] = !newBoard[row][col];
-        setBoard(newBoard);
-        setFeedback(null);
-    };
+    const handleCellClick = (row: number, col: number) => {
+        // If feedback is success, don't allow more moves
+        if (feedback?.type === 'success') return;
 
-    const checkSolution = (): { valid: boolean; conflicts: [number, number][] } => {
-        const conflicts: [number, number][] = [];
-        const queens: [number, number][] = [];
-
-        // Find all queens
-        for (let r = 0; r < 4; r++) {
-            for (let c = 0; c < 4; c++) {
-                if (board[r][c]) {
-                    queens.push([r, c]);
-                }
-            }
+        // First move - place knight anywhere
+        if (currentPos === null) {
+            const newBoard = board.map(r => [...r]);
+            newBoard[row][col] = 1;
+            setBoard(newBoard);
+            setCurrentPos([row, col]);
+            setMoveCount(1);
+            setFeedback(null);
+            return;
         }
 
-        // Check for conflicts
-        for (let i = 0; i < queens.length; i++) {
-            for (let j = i + 1; j < queens.length; j++) {
-                const [r1, c1] = queens[i];
-                const [r2, c2] = queens[j];
+        const [curRow, curCol] = currentPos;
 
-                // Same row
-                if (r1 === r2) {
-                    conflicts.push(queens[i], queens[j]);
-                }
-                // Same column
-                else if (c1 === c2) {
-                    conflicts.push(queens[i], queens[j]);
-                }
-                // Same diagonal
-                else if (Math.abs(r1 - r2) === Math.abs(c1 - c2)) {
-                    conflicts.push(queens[i], queens[j]);
-                }
-            }
-        }
-
-        return { valid: queens.length === 4 && conflicts.length === 0, conflicts };
-    };
-
-    const handleSubmit = () => {
-        setAttempts(prev => prev + 1);
-
-        const queenCount = countQueens();
-
-        if (queenCount !== 4) {
+        // Check if it's a valid knight move
+        if (!isValidMove(curRow, curCol, row, col)) {
             setFeedback({
                 type: 'error',
-                message: `❌ You need exactly 4 queens. Currently placed: ${queenCount}`
+                message: '❌ Invalid move! A knight moves in an "L" shape: 2 squares in one direction and 1 square perpendicular.'
             });
             return;
         }
 
-        const { valid, conflicts } = checkSolution();
+        // Check if cell is already visited
+        if (board[row][col] !== 0) {
+            setFeedback({
+                type: 'error',
+                message: '❌ This square has already been visited! Each square can only be visited once.'
+            });
+            return;
+        }
 
-        if (valid) {
+        // Valid move
+        const newBoard = board.map(r => [...r]);
+        const newMoveCount = moveCount + 1;
+        newBoard[row][col] = newMoveCount;
+        setBoard(newBoard);
+        setCurrentPos([row, col]);
+        setMoveCount(newMoveCount);
+        setFeedback(null);
+
+        // Check if tour is complete (13 or more squares visited)
+        if (newMoveCount >= 13) {
             setFeedback({
                 type: 'success',
-                message: '🎉 Brilliant! You solved the 4 Queens puzzle. The Guardian of Creativity admires your strategic thinking!'
+                message: '🎉 Incredible! You completed the Knight\'s Tour! The Guardian of Creativity marvels at your strategic genius!'
             });
-            setTimeout(onComplete, 2000);
+            setTimeout(onComplete, 2500);
+        }
+    };
+
+    const undoLastMove = () => {
+        if (moveCount === 0) return;
+
+        const newBoard = board.map(r => [...r]);
+
+        if (moveCount === 1) {
+            // Undo first move - reset completely
+            setBoard(Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0)));
+            setCurrentPos(null);
+            setMoveCount(0);
         } else {
-            if (attempts >= 2) {
+            // Find the current position and clear it
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    if (newBoard[r][c] === moveCount) {
+                        newBoard[r][c] = 0;
+                    }
+                    if (newBoard[r][c] === moveCount - 1) {
+                        setCurrentPos([r, c]);
+                    }
+                }
+            }
+            setBoard(newBoard);
+            setMoveCount(moveCount - 1);
+        }
+        setFeedback(null);
+    };
+
+    const resetBoard = () => {
+        setBoard(Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0)));
+        setCurrentPos(null);
+        setMoveCount(0);
+        setFeedback(null);
+    };
+
+    const showHint = () => {
+        if (currentPos === null) {
+            setFeedback({
+                type: 'hint',
+                message: '💡 Tip: Starting from a corner is often easier for finding a complete tour.'
+            });
+        } else {
+            const validMoves = getValidMoves(currentPos[0], currentPos[1]);
+            if (validMoves.length === 0) {
                 setFeedback({
                     type: 'hint',
-                    message: '💡 Hint: Try placing one queen per row. No two queens can share a row, column, or diagonal.'
+                    message: '💡 You\'re stuck! No valid moves left. Use "Undo" to backtrack and try a different path.'
                 });
             } else {
                 setFeedback({
-                    type: 'error',
-                    message: `❌ ${conflicts.length / 2} queen(s) are attacking each other! Remember: queens attack horizontally, vertically, and diagonally.`
+                    type: 'hint',
+                    message: `💡 Warnsdorff's Rule: Choose squares with fewer onward options first. You have ${validMoves.length} valid moves available.`
                 });
             }
         }
     };
 
-    const resetBoard = () => {
-        setBoard(Array(4).fill(null).map(() => Array(4).fill(false)));
-        setFeedback(null);
+    const isValidNextMove = (row: number, col: number): boolean => {
+        if (currentPos === null || board[row][col] !== 0) return false;
+        return isValidMove(currentPos[0], currentPos[1], row, col);
     };
 
     return (
@@ -121,37 +172,89 @@ const CreativityPuzzle: React.FC<CreativityPuzzleProps> = ({ onComplete, onBack,
                     <div className="puzzle-header">
                         <div className="puzzle-icon">🎨</div>
                         <h2 className="puzzle-title">Guardian of Creativity</h2>
-                        <p className="puzzle-subtitle">Solve the classic 4 Queens puzzle</p>
+                        <p className="puzzle-subtitle">Complete the Knight's Tour</p>
                     </div>
 
                     <div className="puzzle-content">
                         <div className="puzzle-question">
-                            <p><strong>The Challenge:</strong></p>
-                            <p>Place <strong>4 Queens</strong> on the board so that no queen can attack another.</p>
+                            <p><strong>The Knight's Challenge:</strong></p>
+                            <p>Move a knight to visit every square on the 4×4 board exactly once.</p>
                             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                                Queens attack horizontally ↔, vertically ↕, and diagonally ↗↘
+                                A knight moves in an "L" shape: 2 squares in one direction, then 1 square perpendicular.
                             </p>
                         </div>
 
-                        {/* Chess board */}
-                        <div className="queens-board">
+                        {/* Chess board - proper 4x4 grid */}
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(4, 65px)',
+                            gridTemplateRows: 'repeat(4, 65px)',
+                            gap: '0',
+                            border: '3px solid var(--color-flame-mid)',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 0 30px rgba(255, 165, 0, 0.3)',
+                            margin: '1.5rem auto',
+                            width: 'fit-content'
+                        }}>
                             {board.map((row, rowIndex) => (
-                                <div key={rowIndex} className="queens-row">
-                                    {row.map((hasQueen, colIndex) => (
+                                row.map((cell, colIndex) => {
+                                    const isCurrentPos = currentPos && currentPos[0] === rowIndex && currentPos[1] === colIndex;
+                                    const isVisited = cell > 0;
+                                    const isValidTarget = isValidNextMove(rowIndex, colIndex);
+                                    const isLight = (rowIndex + colIndex) % 2 === 0;
+
+                                    return (
                                         <div
-                                            key={colIndex}
-                                            className={`queens-cell ${(rowIndex + colIndex) % 2 === 0 ? 'light' : 'dark'} ${hasQueen ? 'has-queen' : ''}`}
-                                            onClick={() => toggleCell(rowIndex, colIndex)}
+                                            key={`${rowIndex}-${colIndex}`}
+                                            onClick={() => handleCellClick(rowIndex, colIndex)}
+                                            style={{
+                                                width: '65px',
+                                                height: '65px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: (currentPos === null || isValidTarget) ? 'pointer' : 'not-allowed',
+                                                background: isCurrentPos
+                                                    ? 'linear-gradient(135deg, #ffd700, #ff8c00)'
+                                                    : isVisited && !isCurrentPos
+                                                        ? (isLight ? 'rgba(100, 200, 100, 0.5)' : 'rgba(60, 140, 60, 0.6)')
+                                                        : isValidTarget
+                                                            ? (isLight ? 'rgba(100, 255, 100, 0.3)' : 'rgba(60, 180, 60, 0.4)')
+                                                            : isLight
+                                                                ? 'linear-gradient(135deg, #e8d5b7 0%, #d4c4a8 100%)'
+                                                                : 'linear-gradient(135deg, #8b6914 0%, #6b4f12 100%)',
+                                                boxShadow: isCurrentPos
+                                                    ? '0 0 15px rgba(255, 215, 0, 0.6)'
+                                                    : isValidTarget
+                                                        ? 'inset 0 0 10px rgba(0, 255, 0, 0.4)'
+                                                        : 'none',
+                                                transition: 'all 0.2s ease',
+                                                position: 'relative'
+                                            }}
                                         >
-                                            {hasQueen && <span className="queen-piece">♛</span>}
+                                            {isCurrentPos && (
+                                                <span style={{
+                                                    fontSize: '2.2rem',
+                                                    color: '#1a1a2e',
+                                                    textShadow: '0 0 10px rgba(255, 215, 0, 0.8)'
+                                                }}>♞</span>
+                                            )}
+                                            {isVisited && !isCurrentPos && (
+                                                <span style={{
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: 'bold',
+                                                    color: isLight ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.8)'
+                                                }}>{cell}</span>
+                                            )}
                                         </div>
-                                    ))}
-                                </div>
+                                    );
+                                })
                             ))}
                         </div>
 
                         <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--color-text-muted)' }}>
-                            Queens placed: {countQueens()}/4
+                            Squares visited: {moveCount}/{BOARD_SIZE * BOARD_SIZE}
                         </p>
 
                         {feedback && (
@@ -161,16 +264,15 @@ const CreativityPuzzle: React.FC<CreativityPuzzleProps> = ({ onComplete, onBack,
                         )}
                     </div>
 
-                    <div className="puzzle-actions">
-                        <button className="btn btn-secondary" onClick={resetBoard}>
-                            Reset Board
+                    <div className="puzzle-actions" style={{ gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <button className="btn btn-secondary" onClick={undoLastMove} disabled={moveCount === 0}>
+                            ↩️ Undo
                         </button>
-                        <button
-                            className={`btn btn-primary ${countQueens() !== 4 ? 'btn-disabled' : ''}`}
-                            onClick={handleSubmit}
-                            disabled={countQueens() !== 4 || feedback?.type === 'success'}
-                        >
-                            Check Solution
+                        <button className="btn btn-secondary" onClick={resetBoard}>
+                            🔄 Reset
+                        </button>
+                        <button className="btn btn-secondary" onClick={showHint}>
+                            💡 Hint
                         </button>
                     </div>
                 </div>

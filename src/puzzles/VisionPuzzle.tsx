@@ -8,17 +8,17 @@ interface VisionPuzzleProps {
     progress: number;
 }
 
-// Sudoku: Fewer clues for harder challenge (about 25 given)
+// Sudoku: 35 clues for easier challenge (46 empty cells)
 const INITIAL_PUZZLE = [
-    [0, 2, 0, 0, 0, 4, 3, 0, 0],
-    [9, 0, 0, 3, 0, 0, 0, 0, 8],
-    [0, 4, 0, 6, 0, 0, 0, 5, 0],
-    [0, 0, 0, 4, 0, 8, 0, 0, 0],
-    [4, 0, 0, 0, 0, 0, 0, 0, 9],
-    [0, 0, 0, 9, 0, 2, 0, 0, 0],
-    [0, 8, 0, 0, 0, 5, 0, 1, 0],
-    [1, 0, 0, 0, 0, 6, 0, 0, 3],
-    [0, 0, 9, 0, 0, 0, 0, 6, 0]
+    [8, 0, 7, 0, 5, 4, 0, 9, 0],
+    [9, 6, 0, 3, 0, 0, 1, 0, 8],
+    [0, 4, 1, 0, 8, 0, 0, 5, 0],
+    [5, 0, 0, 4, 0, 8, 0, 0, 1],
+    [0, 7, 0, 0, 1, 0, 6, 0, 0],
+    [6, 0, 8, 0, 0, 2, 0, 3, 0],
+    [0, 8, 0, 2, 0, 0, 9, 0, 4],
+    [1, 0, 0, 7, 9, 0, 0, 2, 0],
+    [0, 0, 9, 0, 0, 1, 0, 6, 0]
 ];
 
 const VisionPuzzle: React.FC<VisionPuzzleProps> = ({ onComplete, onBack, progress }) => {
@@ -223,7 +223,7 @@ const VisionPuzzle: React.FC<VisionPuzzleProps> = ({ onComplete, onBack, progres
 
                     <div className="puzzle-content">
                         <div className="puzzle-question">
-                            <p><strong>🌌 Challenging:</strong> Only 20 clues given! Fill the grid so each row, column, and 3×3 box contains 1-9.</p>
+                            <p><strong>🌌 Easy Mode:</strong> 35 clues given! Fill the grid so each row, column, and 3×3 box contains 1-9.</p>
                         </div>
 
                         {/* Sudoku Grid */}

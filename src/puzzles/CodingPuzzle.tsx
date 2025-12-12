@@ -12,32 +12,33 @@ const CodingPuzzle: React.FC<CodingPuzzleProps> = ({ onComplete, onBack, progres
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | 'hint'; message: string } | null>(null);
     const [attempts, setAttempts] = useState(0);
 
-    // C code that does pointer arithmetic
-    const cCode = `#include <stdio.h>
-
-int main() {
-    int arr[] = {10, 20, 30, 40, 50};
-    int *ptr = arr;
-    
-    ptr = ptr + 2;
-    *ptr = *ptr + *(ptr - 1) + *(ptr + 1);
-    
-    int result = 0;
-    for (int i = 0; i < 5; i++) {
-        result += arr[i];
+    // Hard Java code with String operations and loops
+    const javaCode = `public class Main {
+    public static void main(String[] args) {
+        String s = "JAVA";
+        int sum = 0;
+        
+        // Loop converts each character to its alphabet position (A=1, B=2,...,Z=26)
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            sum += (c - 'A' + 1);
+        }
+        
+        int result = sum % 10 + sum / 10;
+        System.out.print(result);
     }
-    
-    printf("%d", result);
-    return 0;
 }`;
 
     // Explanation:
-    // arr = {10, 20, 30, 40, 50}
-    // ptr points to arr[2] (value 30)
-    // *ptr = 30 + 20 + 40 = 90
-    // arr becomes {10, 20, 90, 40, 50}
-    // result = 10 + 20 + 90 + 40 + 50 = 210
-    const correctAnswer = '210';
+    // 'J' - 'A' + 1 = 74 - 65 + 1 = 10
+    // 'A' - 'A' + 1 = 65 - 65 + 1 = 1
+    // 'V' - 'A' + 1 = 86 - 65 + 1 = 22
+    // 'A' - 'A' + 1 = 65 - 65 + 1 = 1
+    //
+    // sum = 10 + 1 + 22 + 1 = 34
+    // result = 34 % 10 + 34 / 10 = 4 + 3 = 7
+
+    const correctAnswer = '7';
 
     const handleSubmit = () => {
         if (!userAnswer.trim()) return;
@@ -49,29 +50,29 @@ int main() {
         if (normalizedAnswer === correctAnswer) {
             setFeedback({
                 type: 'success',
-                message: '🎉 Excellent! You correctly traced the pointer arithmetic. The Guardian of Code acknowledges your mastery!'
+                message: '🎉 Excellent! You decoded the character arithmetic. The Guardian of Code acknowledges your mastery!'
             });
             setTimeout(onComplete, 2000);
         } else {
             if (attempts >= 3) {
                 setFeedback({
                     type: 'hint',
-                    message: '💡 Final Hint: After ptr+2, *ptr modifies arr[2]. The new value = arr[1] + arr[2] + arr[3]. Then sum all 5 elements.'
+                    message: '💡 Final Hint: J=10, A=1, V=22, A=1. Sum=34. Then 34%10 + 34/10 = 4+3.'
                 });
             } else if (attempts >= 2) {
                 setFeedback({
                     type: 'hint',
-                    message: '💡 Hint: ptr+2 points to the 3rd element (index 2). *(ptr-1) is the element before, *(ptr+1) is the element after.'
+                    message: '💡 Hint: (c - \'A\' + 1) gives position in alphabet. J=10, A=1, V=22. Sum them, then apply the formula.'
                 });
             } else if (attempts >= 1) {
                 setFeedback({
                     type: 'hint',
-                    message: '💡 Hint: Trace the pointer carefully. ptr = ptr + 2 moves the pointer by 2 positions.'
+                    message: '💡 Hint: In ASCII, \'A\'=65, \'J\'=74, \'V\'=86. So (char - \'A\' + 1) gives alphabet position.'
                 });
             } else {
                 setFeedback({
                     type: 'error',
-                    message: '❌ Incorrect. Trace through the code step by step with the given array values.'
+                    message: '❌ Incorrect. Think about ASCII values and character arithmetic!'
                 });
             }
         }
@@ -87,15 +88,15 @@ int main() {
                     <div className="puzzle-header">
                         <div className="puzzle-icon">💻</div>
                         <h2 className="puzzle-title">Guardian of Code</h2>
-                        <p className="puzzle-subtitle">Predict the output of this C program</p>
+                        <p className="puzzle-subtitle">Predict the output of this Java program</p>
                     </div>
 
                     <div className="puzzle-content">
                         <div className="puzzle-question">
-                            <p><strong>What will be the output when this C code is executed?</strong></p>
+                            <p><strong>What will be the output when this Java code is executed?</strong></p>
                         </div>
 
-                        <pre className="code-editor" style={{ fontSize: '0.85rem', textAlign: 'left' }}>{cCode}</pre>
+                        <pre className="code-editor" style={{ fontSize: '0.85rem', textAlign: 'left' }}>{javaCode}</pre>
 
                         <div style={{ marginTop: '1.5rem', maxWidth: '300px', margin: '1.5rem auto 0' }}>
                             <input
