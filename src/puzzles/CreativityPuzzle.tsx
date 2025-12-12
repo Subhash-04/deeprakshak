@@ -9,6 +9,12 @@ interface CreativityPuzzleProps {
 }
 
 // Knight's Tour Puzzle - Complete a knight's tour on a 4x4 board
+// All possible knight moves (module-scope so hooks don't need it as a dependency)
+const KNIGHT_MOVES: [number, number][] = [
+    [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+    [1, -2], [1, 2], [2, -1], [2, 1]
+];
+
 const CreativityPuzzle: React.FC<CreativityPuzzleProps> = ({ onComplete, onBack, progress }) => {
     const BOARD_SIZE = 4;
 
@@ -20,11 +26,7 @@ const CreativityPuzzle: React.FC<CreativityPuzzleProps> = ({ onComplete, onBack,
     const [moveCount, setMoveCount] = useState(0);
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | 'hint'; message: string } | null>(null);
 
-    // All possible knight moves
-    const knightMoves = [
-        [-2, -1], [-2, 1], [-1, -2], [-1, 2],
-        [1, -2], [1, 2], [2, -1], [2, 1]
-    ];
+    // Note: knight moves are defined at module scope as `KNIGHT_MOVES`
 
     const isValidMove = useCallback((fromRow: number, fromCol: number, toRow: number, toCol: number): boolean => {
         const rowDiff = Math.abs(toRow - fromRow);
@@ -34,7 +36,7 @@ const CreativityPuzzle: React.FC<CreativityPuzzleProps> = ({ onComplete, onBack,
 
     const getValidMoves = useCallback((row: number, col: number): [number, number][] => {
         const moves: [number, number][] = [];
-        for (const [dr, dc] of knightMoves) {
+        for (const [dr, dc] of KNIGHT_MOVES) {
             const newRow = row + dr;
             const newCol = col + dc;
             if (newRow >= 0 && newRow < BOARD_SIZE &&
